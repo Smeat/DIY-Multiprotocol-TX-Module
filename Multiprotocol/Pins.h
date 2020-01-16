@@ -213,7 +213,7 @@
 	#endif
 
 #else //STM32_BOARD
-#ifdef DJT_MODULE
+#ifdef BOARD_DJT
 	#define BIND_pin PA8
 	#define LED_pin PA12
 	#define LED2_pin PA11
@@ -291,7 +291,7 @@
 	#define USART_INIT_SERIAL usart2_begin
 	#define USART_INIT_TELEMETRY usart3_begin
 
-#endif // DJT_MODULE
+#endif // BOARD_DJT
 
 	#ifdef A7105_INSTALLED
 	#define	A7105_CSN_on	digitalWrite(A7105_CSN_pin,HIGH)
