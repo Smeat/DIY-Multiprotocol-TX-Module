@@ -983,7 +983,7 @@ inline void tx_pause()
 		#else
 			#ifndef BASH_SERIAL
 				#ifdef STM32_BOARD
-					USART3_BASE->CR1 &= ~ USART_CR1_TXEIE;
+					USART_BASE_TELEMETRY->CR1 &= ~ USART_CR1_TXEIE;
 				#else
 					UCSR0B &= ~_BV(UDRIE0);
 				#endif
@@ -1005,7 +1005,7 @@ inline void tx_resume()
 			#else
 				#ifndef BASH_SERIAL
 					#ifdef STM32_BOARD
-						USART3_BASE->CR1 |= USART_CR1_TXEIE;
+						USART_BASE_TELEMETRY->CR1 |= USART_CR1_TXEIE;
 					#else
 						UCSR0B |= _BV(UDRIE0);			
 					#endif
@@ -1920,19 +1920,19 @@ void modules_reset()
 		#ifdef CHECK_FOR_BOOTLOADER
 			if ( boot )
 			{
-				usart2_begin(57600,SERIAL_8N1);
-				USART2_BASE->CR1 &= ~USART_CR1_RXNEIE ;
+				USART_INIT_SERIAL(57600,SERIAL_8N1);
+				USART_BASE_SERIAL->CR1 &= ~USART_CR1_RXNEIE ;
 				(void)UDR0 ;
 			}
 			else
 		#endif // CHECK_FOR_BOOTLOADER
 		{
-			usart2_begin(100000,SERIAL_8E2);
-			USART2_BASE->CR1 |= USART_CR1_PCE_BIT;
+			USART_INIT_SERIAL(100000,SERIAL_8E2);
+			USART_BASE_SERIAL->CR1 |= USART_CR1_PCE_BIT;
 		}
-		usart3_begin(100000,SERIAL_8E2);
-		USART3_BASE->CR1 &= ~ USART_CR1_RE;		//disable receive
-		USART2_BASE->CR1 &= ~ USART_CR1_TE;		//disable transmit
+		USART_INIT_TELEMETRY(100000,SERIAL_8E2);
+		USART_BASE_TELEMETRY->CR1 &= ~ USART_CR1_RE;		//disable receive
+		USART_BASE_SERIAL->CR1 &= ~ USART_CR1_TE;		//disable transmit
 	#else
 		//ATMEGA328p
 		#include <util/setbaud.h>	
@@ -1964,6 +1964,13 @@ void modules_reset()
 }
 
 #ifdef STM32_BOARD
+	void usart1_begin(uint32_t baud,uint32_t config )
+	{
+		usart_init(USART1); 
+		usart_config_gpios_async(USART1,GPIOA,PIN_MAP[PA10].gpio_bit,GPIOA,PIN_MAP[PA9].gpio_bit,config);
+		usart_set_baud_rate(USART1, STM32_PCLK1, baud);
+		usart_enable(USART1);
+	}
 	void usart2_begin(uint32_t baud,uint32_t config )
 	{
 		usart_init(USART2); 
@@ -2014,7 +2021,7 @@ void pollBoot()
 	#ifdef ORANGE_TX
 	if ( USARTC0.STATUS & USART_RXCIF_bm )
 	#elif defined STM32_BOARD
-	if ( USART2_BASE->SR & USART_SR_RXNE )
+	if ( USART_BASE_SERIAL->SR & USART_SR_RXNE )
 	#else
 	if ( UCSR0A & ( 1 << RXC0 ) )
 	#endif
@@ -2213,7 +2220,7 @@ static uint32_t random_id(uint16_t address, uint8_t create_new)
 		#ifdef ORANGE_TX
 			if((USARTC0.STATUS & 0x1C)==0)							// Check frame error, data overrun and parity error
 		#elif defined STM32_BOARD
-			if((USART2_BASE->SR & USART_SR_RXNE) && (USART2_BASE->SR &0x0F)==0)					
+			if((USART_BASE_SERIAL->SR & USART_SR_RXNE) && (USART_BASE_SERIAL->SR &0x0F)==0)					
 		#else
 			UCSR0B &= ~_BV(RXCIE0) ;								// RX interrupt disable
 			sei() ;

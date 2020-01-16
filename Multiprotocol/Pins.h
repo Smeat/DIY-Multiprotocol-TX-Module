@@ -229,6 +229,11 @@
 	#define CC25_LNA_on digitalWrite(CC25_LNA_pin, HIGH)
 	#define CC25_LNA_off digitalWrite(CC25_LNA_pin, LOW)
 
+	#define USART_BASE_TELEMETRY USART2_BASE
+	#define USART_BASE_SERIAL USART1_BASE
+	#define USART_INIT_SERIAL usart1_begin
+	#define USART_INIT_TELEMETRY usart2_begin
+
 	#undef A7105_INSTALLED
 	#undef CYRF6936_INSTALLED
 	#undef NRF24L01_INSTALLED
@@ -281,6 +286,11 @@
 	//
 	#define	PE2_on  		digitalWrite(PE2_pin,HIGH)
 	#define	PE2_off 		digitalWrite(PE2_pin,LOW)
+	#define USART_BASE_TELEMETRY USART3_BASE
+	#define USART_BASE_SERIAL USART2_BASE
+	#define USART_INIT_SERIAL usart2_begin
+	#define USART_INIT_TELEMETRY usart3_begin
+
 #endif // DJT_MODULE
 
 	#ifdef A7105_INSTALLED
@@ -385,8 +395,8 @@
 		#define TCNT1 TIMER2_BASE->CNT
 		#define TIFR1 TIMER2_BASE->SR
 		#define OCF1A_bm TIMER_SR_CC1IF
-		#define UDR0 USART2_BASE->DR
-		#define UCSR0B USART2_BASE->CR1
+		#define UDR0 USART_BASE_SERIAL->DR
+		#define UCSR0B USART_BASE_SERIAL->CR1
 		#define RXCIE0 USART_CR1_RXNEIE_BIT
 		#define TXCIE0 USART_CR1_TXEIE_BIT
 		//#define TIFR1 TIMER2_BASE->SR
