@@ -306,16 +306,34 @@ void setup()
 		//STM32
 		afio_cfg_debug_ports(AFIO_DEBUG_NONE);
 		pinMode(LED2_pin,OUTPUT);
+#ifdef A7105_INSTALLED
 		pinMode(A7105_CSN_pin,OUTPUT);
+#endif
+#ifdef CC2500_INSTALLED
 		pinMode(CC25_CSN_pin,OUTPUT);
+#endif
+#ifdef NRF24L01_INSTALLED
 		pinMode(NRF_CSN_pin,OUTPUT);
+#endif
+#ifdef CYRF6936_INSTALLED
 		pinMode(CYRF_CSN_pin,OUTPUT);
-		pinMode(SPI_CSN_pin,OUTPUT);
 		pinMode(CYRF_RST_pin,OUTPUT);
+#endif
+#ifdef SPI_CSN_pin
+		pinMode(SPI_CSN_pin,OUTPUT);
+#endif
+#ifdef PE1_pin
 		pinMode(PE1_pin,OUTPUT);
+#endif
+#ifdef PE2_pin
 		pinMode(PE2_pin,OUTPUT);
+#endif
+#ifdef INVERT_TELEMETRY_TX
 		pinMode(TX_INV_pin,OUTPUT);
+#endif
+#ifdef INVERT_TELEMETRY
 		pinMode(RX_INV_pin,OUTPUT);
+#endif
 		#if defined TELEMETRY
 			#if defined INVERT_SERIAL
 				TX_INV_on;	//activate inverter for both serial TX and RX signals
@@ -327,10 +345,18 @@ void setup()
 		#endif
 		pinMode(BIND_pin,INPUT_PULLUP);
 		pinMode(PPM_pin,INPUT);
+#ifdef S1_pin
 		pinMode(S1_pin,INPUT_PULLUP);//dial switch
+#endif
+#ifdef S2_pin
 		pinMode(S2_pin,INPUT_PULLUP);
+#endif
+#ifdef S3_pin
 		pinMode(S3_pin,INPUT_PULLUP);
+#endif
+#ifdef S4_pin
 		pinMode(S4_pin,INPUT_PULLUP);
+#endif
 		
 		#if defined ENABLE_DIRECT_INPUTS
 			#if defined (DI1_PIN)

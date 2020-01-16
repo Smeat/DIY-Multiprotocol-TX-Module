@@ -84,22 +84,18 @@ void CC2500_WriteData(uint8_t *dpbuffer, uint8_t len)
 
 void CC2500_SetTxRxMode(uint8_t mode)
 {
-	if(mode == TX_EN)
-	{//from deviation firmware
-		CC2500_WriteReg(CC2500_00_IOCFG2, 0x2F);
-		CC2500_WriteReg(CC2500_02_IOCFG0, 0x2F | 0x40);
+	if(mode == TX_EN) {
+		CC25_LNA_off;
+		CC25_PA_on;
 	}
-	else
-		if (mode == RX_EN)
-		{
-			CC2500_WriteReg(CC2500_02_IOCFG0, 0x2F);
-			CC2500_WriteReg(CC2500_00_IOCFG2, 0x2F | 0x40);
-		}
-		else
-		{
-			CC2500_WriteReg(CC2500_02_IOCFG0, 0x2F);
-			CC2500_WriteReg(CC2500_00_IOCFG2, 0x2F);
-		}
+	else if (mode == RX_EN) {
+		CC25_PA_off;
+		CC25_LNA_on;
+	}
+	else {
+		CC25_LNA_off;
+		CC25_PA_off;
+	}
 }
 
 //------------------------

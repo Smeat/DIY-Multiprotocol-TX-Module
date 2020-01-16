@@ -211,7 +211,39 @@
 		#define BIND_SET_PULLUP		BIND_port |= _BV(BIND_pin)
 		#define IS_BIND_BUTTON_on	( (BIND_ipr & _BV(BIND_pin)) == 0x00 )
 	#endif
+
 #else //STM32_BOARD
+#ifdef DJT_MODULE
+	#define BIND_pin PA8
+	#define LED_pin PA12
+	#define LED2_pin PA11
+	#define PPM_pin PA0
+	#define SCK_pin PA5
+	#define SDO_pin PA6
+	#define SDI_pin PA7
+	#define CC25_LNA_pin PB4
+	#define CC25_PA_pin PA15
+	#define CC25_CSN_pin PA4
+	#define CC25_PA_on digitalWrite(CC25_PA_pin, HIGH)
+	#define CC25_PA_off digitalWrite(CC25_PA_pin, LOW)
+	#define CC25_LNA_on digitalWrite(CC25_LNA_pin, HIGH)
+	#define CC25_LNA_off digitalWrite(CC25_LNA_pin, LOW)
+
+	#undef A7105_INSTALLED
+	#undef CYRF6936_INSTALLED
+	#undef NRF24L01_INSTALLED
+	#undef INVERT_TELEMETRY
+	#undef INVERT_TELEMETRY_TX
+	#define TX_INV_off
+	#define TX_INV_on
+	#define RX_INV_off
+	#define RX_INV_on
+	#define PE1_on
+	#define PE1_off
+	#define PE2_on
+	#define PE2_off
+
+#else
 	#define	BIND_pin		PA0
 	#define	LED_pin			PA1
 	#define	LED2_pin		PA2
@@ -239,15 +271,22 @@
 	//
 	#define	TX_INV_pin		PB3
 	#define	RX_INV_pin		PB1
+	#define CC25_PA_on CC2500_WriteReg(CC2500_02_IOCFG0, 0x2F | 0x40);
+	#define CC25_PA_off CC2500_WriteReg(CC2500_02_IOCFG0, 0x2F);
+	#define CC25_LNA_on CC2500_WriteReg(CC2500_00_IOCFG2, 0x2F | 0x40);
+	#define CC25_LNA_off CC2500_WriteReg(CC2500_00_IOCFG2, 0x2F);
 	//
 	#define	PE1_on  		digitalWrite(PE1_pin,HIGH)
 	#define	PE1_off		 	digitalWrite(PE1_pin,LOW)
 	//
 	#define	PE2_on  		digitalWrite(PE2_pin,HIGH)
 	#define	PE2_off 		digitalWrite(PE2_pin,LOW)
+#endif // DJT_MODULE
 
+	#ifdef A7105_INSTALLED
 	#define	A7105_CSN_on	digitalWrite(A7105_CSN_pin,HIGH)
 	#define	A7105_CSN_off	digitalWrite(A7105_CSN_pin,LOW)
+	#endif
 
 	#define NRF_CE_on
 	#define	NRF_CE_off
@@ -259,31 +298,39 @@
 	#define	SDI_off			digitalWrite(SDI_pin,LOW)
 
 	#define	SDI_1			(digitalRead(SDI_pin)==HIGH)
+
 	#define	SDI_0			(digitalRead(SDI_pin)==LOW)
 
 	#define	CC25_CSN_on		digitalWrite(CC25_CSN_pin,HIGH)
 	#define	CC25_CSN_off	digitalWrite(CC25_CSN_pin,LOW)
 
+	#ifdef NRF24L01_INSTALLED
 	#define	NRF_CSN_on		digitalWrite(NRF_CSN_pin,HIGH)
 	#define	NRF_CSN_off		digitalWrite(NRF_CSN_pin,LOW)
+	#endif
 
+	#ifdef CYRF6939_INSTALLED
 	#define	CYRF_CSN_on		digitalWrite(CYRF_CSN_pin,HIGH)
 	#define	CYRF_CSN_off	digitalWrite(CYRF_CSN_pin,LOW)
+	#define	CYRF_RST_HI		digitalWrite(CYRF_RST_pin,HIGH)	//reset cyrf
+	#define	CYRF_RST_LO		digitalWrite(CYRF_RST_pin,LOW)	//
+	#endif
 
 	#define	SPI_CSN_on		digitalWrite(SPI_CSN_pin,HIGH)
 	#define	SPI_CSN_off		digitalWrite(SPI_CSN_pin,LOW)
 
-	#define	CYRF_RST_HI		digitalWrite(CYRF_RST_pin,HIGH)	//reset cyrf
-	#define	CYRF_RST_LO		digitalWrite(CYRF_RST_pin,LOW)	//
-
 	#define	SDO_1			(digitalRead(SDO_pin)==HIGH)
 	#define	SDO_0			(digitalRead(SDO_pin)==LOW)
-
+	
+	#ifdef INVERT_TELEMETRY_TX
 	#define	TX_INV_on		digitalWrite(TX_INV_pin,HIGH)
 	#define	TX_INV_off		digitalWrite(TX_INV_pin,LOW)
+	#endif
 
+	#ifdef INVERT_TELEMETRY
 	#define	RX_INV_on		digitalWrite(RX_INV_pin,HIGH)
 	#define	RX_INV_off		digitalWrite(RX_INV_pin,LOW)
+	#endif
 
 	#define	LED_on			digitalWrite(LED_pin,HIGH)
 	#define	LED_off			digitalWrite(LED_pin,LOW)
